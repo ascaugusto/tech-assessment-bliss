@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Text /> 1`] = `
+<text
+  className="sc-bcXHqe dvHPzA"
+>
+  Teste
+</text>
+`;
