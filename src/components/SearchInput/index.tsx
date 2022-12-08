@@ -1,19 +1,32 @@
 import React, { Ref } from 'react'
-import { SearchInputContainer } from './elements'
+
+//components
+import { InputComponent, SearchInputContainer } from './elements'
+import { AiOutlineClose } from 'react-icons/ai'
+import Container from '../Container'
 
 type SearchInputType = {
   value?: string,
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-	ref?: React.Ref<HTMLInputElement>
+	ref?: React.Ref<HTMLInputElement>,
+	onClearSearch: () => void
 }
 
-const SearchInput = React.forwardRef(({ value, onChange }: SearchInputType, ref: Ref<HTMLInputElement>) => {
+const SearchInput = React.forwardRef(({ value, onChange, onClearSearch }: SearchInputType, ref: Ref<HTMLInputElement>) => {
 	return (
 		<SearchInputContainer
-			value={value}
 			onChange={onChange}
-			ref={ref}
-		/>
+		>
+			<InputComponent
+				value={value}
+				ref={ref}
+			/>
+			{value && (
+				<Container justify='center' width='42px' onClick={onClearSearch}>
+				 <AiOutlineClose size={26}/>
+				</Container>
+			)}
+		</SearchInputContainer>
 	)
 
 	SearchInput.displayName = 'SearchInput'

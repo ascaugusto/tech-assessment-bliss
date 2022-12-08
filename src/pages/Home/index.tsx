@@ -53,6 +53,17 @@ function Home() {
 		inputRef.current?.focus()
 	}
 
+	const _handleClearSearch = () => {
+		setFilter('')
+		setSearchParams({
+			filter: '',
+			// offset: 0
+		})
+		if (inputRef.current) {
+			inputRef.current.value = ''
+		}
+	}
+
 	return (
 		<HomeContainer>
 			<Container>
@@ -69,6 +80,7 @@ function Home() {
 									<SearchInputContainer
 										value={filter || undefined}
 										onChange={e => _handleChange(e.target.value)}
+										onClearSearch={_handleClearSearch}
 										ref={inputRef}
 									/>
 								</Container>
