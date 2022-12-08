@@ -9,6 +9,7 @@ export const QuestionContainer = styled.div`
   padding: 6px;
   margin-bottom: 12px;
   cursor: pointer;
+  background-color: rgba(0, 146, 136, 0.1);
 
   :hover {
     border: 2px solid rgba(0, 146, 136, 0.4);

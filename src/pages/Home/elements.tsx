@@ -15,7 +15,6 @@ export const QuestionItemsContainer = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   width: 1000px;
-  background-color: aliceblue;
 
   @media (max-width: 700px) {
     justify-content: center;
