@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 
@@ -17,22 +17,23 @@ import SearchInputContainer from '../../components/SearchInput'
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [filter, setFilter] = useState(searchParams.get('filter'))
-	// const [offset, setOffset] = useState(searchParams.get('offset'))
 
 	const [isLoading, setIsLoading] = useState(true)
 	const dispath = useAppDispatch()
 	const serviceHealth = useSelector(useHealth)
 	const questionList = useSelector(useQuestionList)
-
+	const inputRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
 		dispath(fetchHealth())
+		inputRef.current?.focus()
 	}, [])
-
+	
 	useEffect(() => {
 		if (serviceHealth) {
 			dispath(fetchQuestionList())
 			setIsLoading(false)
+			filter !== null && setTimeout(() => _handleInputFocus(), 500)
 		}
 	}, [serviceHealth])
 
@@ -46,6 +47,10 @@ function Home() {
 			filter: value,
 			// offset: 0
 		})
+	}
+
+	const _handleInputFocus = () => {
+		inputRef.current?.focus()
 	}
 
 	return (
@@ -64,6 +69,7 @@ function Home() {
 									<SearchInputContainer
 										value={filter || undefined}
 										onChange={e => _handleChange(e.target.value)}
+										ref={inputRef}
 									/>
 								</Container>
 								<QuestionItemsContainer>

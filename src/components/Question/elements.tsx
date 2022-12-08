@@ -14,8 +14,6 @@ export const QuestionContainer = styled.div`
   :hover {
     border: 2px solid rgba(0, 146, 136, 0.4);
   }
-
- 
 `
 
 export const QuestionTitleWrapper = styled.div`

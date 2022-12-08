@@ -42,12 +42,6 @@ export const fetchQuestionList = (): AppThunk =>
 		}
 		const response = await getListAllQuestions(payload)
 		dispatch(setQuestionList(response?.data))
-		
-		// if (response?.data.status === 'OK') {
-		// 	dispatch(setHealth(true))
-		// } else {
-		// 	dispatch(setHealth(false))
-		// }
 	}
 
 export const questionSlice = createSlice({
@@ -55,7 +49,6 @@ export const questionSlice = createSlice({
 	initialState,
 	reducers: {
 		setHealth(state, { payload }: PayloadAction<boolean>) {
-			console.log('=====================>  ~ payload', payload)
 			return { ...state, health: payload }
 		},
 		setPage(state, { payload }: PayloadAction<number>) {
