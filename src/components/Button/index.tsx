@@ -3,12 +3,13 @@ import { ButtonContainer } from './elements'
 
 type buttonType = {
   onClick: () => void,
-  children: string
+  children: string,
+	disabled?: boolean
 }
 
-const Button = ({ onClick, children }: buttonType) => {
+const Button = ({ onClick, children, disabled }: buttonType) => {
 	return (
-		<ButtonContainer onClick={onClick}>
+		<ButtonContainer onClick={onClick} disabled={disabled}>
 			{children}
 		</ButtonContainer>
 	)

@@ -4,7 +4,7 @@ export const QuestionContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid rgba(0, 146, 136, 0.2);;
+  border: 2px solid rgba(0, 146, 136, 0.2);
   border-radius: 8px;
   padding: 6px;
   margin-bottom: 12px;

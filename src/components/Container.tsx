@@ -10,6 +10,7 @@ type columnProps = {
   disabled?: boolean,
   paddingTop?: string,
   paddingBottom?: string,
+  marginTop?: string,
   marginBottom?: string,
   paddingRight?: string,
   border?: boolean
@@ -24,6 +25,7 @@ export const Container = styled.div<columnProps>`
   ${props => props.align && `align-items: ${props.align};`}
   ${props => props.disabled && 'opacity: 30%;'}
   ${props => props.paddingTop && `padding-top: ${props.paddingTop};`}
+  ${props => props.marginTop && `margin-top: ${props.marginTop};`}
   ${props => props.paddingBottom && `padding-bottom: ${props.paddingBottom};`}
   ${props => props.marginBottom && `margin-bottom: ${props.marginBottom};`}
   ${props => props.paddingRight && `padding-right: ${props.paddingRight};`}

@@ -12,7 +12,7 @@ type SearchInputType = {
 	onClearSearch: () => void
 }
 
-const SearchInput = React.forwardRef(({ value, onChange, onClearSearch }: SearchInputType, ref: Ref<HTMLInputElement>) => {
+const Input = React.forwardRef(({ value, onChange, onClearSearch }: SearchInputType, ref: Ref<HTMLInputElement>) => {
 	return (
 		<SearchInputContainer
 			onChange={onChange}
@@ -29,7 +29,7 @@ const SearchInput = React.forwardRef(({ value, onChange, onClearSearch }: Search
 		</SearchInputContainer>
 	)
 
-	SearchInput.displayName = 'SearchInput'
+	Input.displayName = 'Input'
 })
 
-export default SearchInput
+export default Input
