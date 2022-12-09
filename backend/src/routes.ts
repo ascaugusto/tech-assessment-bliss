@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import QuestionController from './controllers/QuestionController'
+import { QuestionGet } from './controllers/QuestionController'
 
 const routes = Router()
 
-routes.get('/questions', QuestionController.index)
+routes.get('/questions', QuestionGet)
 
 export default routes
