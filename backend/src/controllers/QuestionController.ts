@@ -1,6 +1,29 @@
 import { Request, Response } from "express"
 import { questionType } from "./QuestionModels"
-const questions = [
+
+export default {
+  async index(req: Request, res: Response) {
+    const limit = req.query.limit
+    const offset = req.query.offset
+    const filter = req.query.filter
+    let newQuetions: questionType[] = QUESTIONS
+    if (offset && isNaN(Number(offset))) {
+      res.status(400).send('The offset value must be an number!')
+    } else if (limit && isNaN(Number(limit))) {
+      res.status(400).send('The limit value must be an number!')
+    } 
+    else {
+      if (offset && limit) {
+        const startIndex = (Number(offset) - 1) * Number(limit)
+        const endIndex = Number(offset) * Number(limit)
+        newQuetions = QUESTIONS.slice(startIndex, endIndex)
+      }
+      return res.json(newQuetions)
+    }
+  }
+}
+
+const QUESTIONS = [
   {
     "id": 1,
     "question": "Favourite programming language?",
@@ -252,20 +275,3 @@ const questions = [
     ]
   }
 ]
-
-export default {
-  async index(req: Request, res: Response) {
-    const limit = req.query.limit
-    const offset = req.query.offset
-    const filter = req.query.filter
-    let newQuetions: questionType[] = []
-
-    if (offset && limit) {
-      const startIndex = (Number(offset) - 1) * Number(limit)
-      const endIndex = Number(offset) * Number(limit)
-      newQuetions = questions.slice(startIndex, endIndex)
-    }
- 
-    return res.json(newQuetions)
-  }
-}
