@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce'
 
 //Reducer
 import { useAppDispatch } from '../../redux/hooks'
-import { fetchHealth, fetchQuestionList, useHealth, useQuestionList } from '../../redux/question/questionSlice' 
+import { fetchHealth, fetchQuestionList, useHealth, useQuestionList, setFilterValue, submitShareUrl } from '../../redux/question/questionSlice' 
 
 //Components
 import { HomeContainer, QuestionItemsContainer } from './elements'
@@ -24,7 +24,7 @@ function Home() {
 	const [email, setEmail] = useState('')
 	const [invalidEmailMessage, setInvalidEmailMessage] = useState('')
 
-	const dispath = useAppDispatch()
+	const dispatch = useAppDispatch()
 	const serviceHealth = useSelector(useHealth)
 	const questionList = useSelector(useQuestionList)
 	const inputRef = useRef<HTMLInputElement>(null)
@@ -32,17 +32,18 @@ function Home() {
 
 	//The screen will render
 	useEffect(() => {
-		dispath(fetchHealth())
+		dispatch(fetchHealth())
 		inputRef.current?.focus()
 	}, [])
 	
 	//When the health is ok!
 	useEffect(() => {
 		if (serviceHealth) {
-			dispath(fetchQuestionList())
+			dispatch(fetchQuestionList())
 			setIsLoading(false)
 			filter !== null && setTimeout(() => _handleInputFocus(), 500)
 		}
+		setTimeout(() => setIsLoading(false), 510) 
 	}, [serviceHealth])
 
 	//The retry action will reload the page!
@@ -55,10 +56,16 @@ function Home() {
 		setSearchParams({
 			filter: value,
 		})
+		dispatch(setFilterValue(value))
+		_debounceFetchQuestionList()
 	}
 
 	const _handleInputFocus = () => {
 		inputRef.current?.focus()
+		if (filter !== null) {
+			dispatch(setFilterValue(filter))
+		}
+		dispatch(fetchQuestionList())
 	}
 
 	const _handleClearSearch = () => {
@@ -71,6 +78,10 @@ function Home() {
 			inputRef.current.value = ''
 		}
 	}
+
+	const _debounceFetchQuestionList = debounce(() => {
+		dispatch(fetchQuestionList())
+	}, 300)
 
 	const _handleOpenShareScreen = () => {
 		setOpenShareScreenModal(true)
@@ -105,6 +116,10 @@ function Home() {
 			setEmail('')
 			setInvalidEmailMessage('')
 		}
+	}
+
+	const _submitShare = () => {
+		dispatch(submitShareUrl(email))
 	}
 
 	return (
@@ -187,7 +202,7 @@ function Home() {
 							{invalidEmailMessage}
 						</Text>
 						<Button
-							onClick={() => console.log('Seddddddasduhasudhasuhdaushd')}
+							onClick={_submitShare}
 							disabled={invalidEmailMessage !== '' || email === ''}
 						>
 							Send

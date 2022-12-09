@@ -5,7 +5,7 @@ import { RootState, AppThunk } from '../../redux/store'
 import { questionType } from './questionModels'
 
 //Service
-import { getHealthStatus, getListAllQuestions, getListAllQuestionsRequest } from '../../service'
+import { getHealthStatus, getListAllQuestions, getListAllQuestionsRequest, shareURL, shareURLType } from '../../service'
 
 export interface QuestionState {
   questionList: questionType[],
@@ -25,12 +25,17 @@ const initialState: QuestionState = {
 
 export const fetchHealth = (): AppThunk =>
   	async (dispatch) => {
-  		const response = await getHealthStatus()
-		if (response?.data.status === 'OK') {
-			dispatch(setHealth(true))
-		} else {
+		try {
+			const response = await getHealthStatus()
+			if (response.data.status === 'OK') {
+				dispatch(setHealth(true))
+			} else {
+				dispatch(setHealth(false))
+			}
+		} catch (error) {
 			dispatch(setHealth(false))
 		}
+ 
 	}
 
 export const fetchQuestionList = (): AppThunk =>
@@ -42,6 +47,22 @@ export const fetchQuestionList = (): AppThunk =>
 		}
 		const response = await getListAllQuestions(payload)
 		dispatch(setQuestionList(response?.data))
+	}
+
+export const submitShareUrl = (email: string): AppThunk =>
+	async () => {
+		const payload: shareURLType = {
+			url: window.location.href,
+			email: email
+		}
+		const response = await shareURL(payload)
+		if (response?.status === 200) {
+			alert('Page sent successfully!')
+			window.location.reload()
+		} else {
+			alert('Error when sending page, try again later!')
+			window.location.reload()
+		}
 	}
 
 export const questionSlice = createSlice({
@@ -56,11 +77,14 @@ export const questionSlice = createSlice({
 		},
 		setQuestionList(state, { payload }: PayloadAction<questionType[]>) {
 			return { ...state, questionList: payload}
+		},
+		setFilterValue(state, { payload }: PayloadAction<string>) {
+			return { ...state, filterValue: payload}
 		}
 	},
 })
 
-export const { setPage, setHealth, setQuestionList } = questionSlice.actions
+export const { setPage, setHealth, setQuestionList, setFilterValue } = questionSlice.actions
 export const questionList = (state: RootState) => state.question.questionList
 export const useHealth = (state: RootState) => state.question.health
 export const useFilterValue = (state: RootState) => state.question.filterValue
