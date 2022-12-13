@@ -35,7 +35,6 @@ export const fetchHealth = (): AppThunk =>
 		} catch (error) {
 			dispatch(setHealth(false))
 		}
- 
 	}
 
 export const fetchQuestionList = (): AppThunk =>

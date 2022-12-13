@@ -6,10 +6,17 @@ import debounce from 'lodash/debounce'
 
 //Reducer
 import { useAppDispatch } from '../../redux/hooks'
-import { fetchHealth, fetchQuestionList, useHealth, useQuestionList, setFilterValue, submitShareUrl } from '../../redux/question/questionSlice' 
+import {
+	fetchHealth,
+	fetchQuestionList,
+	useHealth,
+	useQuestionList,
+	setFilterValue,
+	submitShareUrl
+} from '../../redux/question/questionSlice' 
 
 //Components
-import { HomeContainer, QuestionItemsContainer } from './elements'
+import { HomeContainer, QuestionItemsContainer, SearchAndButtonWrapper } from './elements'
 import Button from '../../components/Button'
 import Container from '../../components/Container'
 import Text from '../../components/Text'
@@ -18,7 +25,7 @@ import Input from '../../components/Input'
 
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams()
-	const [filter, setFilter] = useState(searchParams.get('filter'))
+	const [filter, setFilter] = useState(searchParams.get('filter') || '')
 	const [isLoading, setIsLoading] = useState(true)
 	const [openShareScreenModal, setOpenShareScreenModal] = useState(false)
 	const [email, setEmail] = useState('')
@@ -34,7 +41,7 @@ function Home() {
 	useEffect(() => {
 		dispatch(fetchHealth())
 		inputRef.current?.focus()
-	}, [])
+	})
 	
 	//When the health is ok!
 	useEffect(() => {
@@ -131,7 +138,7 @@ function Home() {
 					<>
 						{serviceHealth ? (
 							<Container column>
-								<Container align='center' justify='space-between'>
+								<SearchAndButtonWrapper>
 									<Container column align='flex-start'>
 										<Text>
 											Search
@@ -149,7 +156,7 @@ function Home() {
 									<Button onClick={_handleOpenShareScreen}>
 										Share Screen
 									</Button>
-								</Container>
+								</SearchAndButtonWrapper>
 								<QuestionItemsContainer>
 									{questionList?.map((item, index) => (
 										<Question 

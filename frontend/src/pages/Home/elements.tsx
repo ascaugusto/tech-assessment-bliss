@@ -21,3 +21,15 @@ export const QuestionItemsContainer = styled.div`
     width: 600px;
   }
 `
+
+export const SearchAndButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 16px;
+  }
+`

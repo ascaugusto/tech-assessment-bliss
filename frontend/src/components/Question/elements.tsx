@@ -24,8 +24,6 @@ export const QuestionTitleWrapper = styled.div`
 
   @media (max-width: 700px) {
     justify-content: center;
-    /* align-items: center; */
-
   }
 `
 

@@ -9,7 +9,7 @@ interface textComponentProps {
   paddingRight?: string
 }
 
-export const TextComponent = styled.text<textComponentProps>`
+export const TextComponent = styled.div<textComponentProps>`
   font-size: ${props => props.size ? props.size : '12px'};
   color: ${props => props.color ? props.color : COLORS.pearlAqua};
   ${props => props.clicker && 'cursor: pointer;' }
