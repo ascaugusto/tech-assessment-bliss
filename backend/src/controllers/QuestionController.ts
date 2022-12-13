@@ -7,7 +7,7 @@ export const HealthStatus = async (req: Request, res: Response) => {
   return res.json(healthResponse)
 }
 
-export const QuestionGet = async (req: Request, res: Response) => {
+export const GetQuestions = async (req: Request, res: Response) => {
   const limit = req.query.limit || ''
   const offset = req.query.offset
   const filter = req.query.filter
@@ -37,14 +37,14 @@ export const QuestionGet = async (req: Request, res: Response) => {
             }
           }) 
         }
-        if (filteredQuestions.length === 0) {
-          return res.status(200).send('No questions found!')
-        }
         newQuetions = filteredQuestions
       });
     }
-
-    return res.json(newQuetions)
+    if (newQuetions.length === 0) {
+      res.status(200).send({ statusMessage: 'No questions found!' })
+    } else {
+      return res.json(newQuetions)
+    }
   }
 }
 

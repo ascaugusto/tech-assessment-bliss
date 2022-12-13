@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LIMIT, MOCK_API_URL } from '../utils/constants'
+import { MOCK_API_URL } from '../utils/constants'
 
 export const getHealthStatus = async () => {
 	try {
@@ -32,7 +32,7 @@ export const shareURL = async ({url, email}: shareURLType) => {
 			destination_email: email,
 			content_url: url
 		})
-		return response?.status
+		return response?.data
 	} catch (error) {
 		console.log('shareURL-error', error)
 		return {status: 404}
