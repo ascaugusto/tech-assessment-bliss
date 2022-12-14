@@ -1,41 +1,29 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
 //Reducer
-import { RootState, AppThunk } from '../../redux/store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { RootState, AppThunk } from '../store'
 import { questionType } from './questionModels'
 
 //Service
-import { getHealthStatus, getListAllQuestions, getListAllQuestionsRequest, shareURL, shareURLType } from '../../service'
+import {
+	getListAllQuestions,
+	getListAllQuestionsRequest
+} from '../../service'
 
 export interface QuestionState {
   questionList: questionType[],
   pageList: number,
-  loading: boolean,
-  health: boolean,
-	filterValue: string
+	filterValue: string,
+	questionMessage: string,
+	lastPage: boolean,
 }
 
 const initialState: QuestionState = {
 	questionList: [],
-	pageList: 0,
-	loading: false,
-	health: false,
-	filterValue: ''
+	pageList: 1,
+	filterValue: '',
+	questionMessage: '',
+	lastPage: false
 }
-
-export const fetchHealth = (): AppThunk =>
-  	async (dispatch) => {
-		try {
-			const response = await getHealthStatus()
-			if (response.data.status === 'OK') {
-				dispatch(setHealth(true))
-			} else {
-				dispatch(setHealth(false))
-			}
-		} catch (error) {
-			dispatch(setHealth(false))
-		}
-	}
 
 export const fetchQuestionList = (): AppThunk =>
 	async (dispatch, getState) => {
@@ -45,23 +33,15 @@ export const fetchQuestionList = (): AppThunk =>
 			filter: question.filterValue
 		}
 		const response = await getListAllQuestions(payload)
-		dispatch(setQuestionList(response?.data))
-	}
-
-export const submitShareUrl = (email: string): AppThunk =>
-	async () => {
-		const payload: shareURLType = {
-			url: window.location.href,
-			email: email
-		}
-		const response = await shareURL(payload)
-		if (response?.status === 200) {
-			alert('Page sent successfully!')
-			window.location.reload()
+		if (question.pageList === 1 && response?.data.statusMessage) {
+			dispatch(setQuestionMessage(response?.data.statusMessage))
+		} else if (response?.data.statusMessage) {
+			dispatch(setLastPage())
 		} else {
-			alert('Error when sending page, try again later!')
-			window.location.reload()
+			let newQuestionList = question.questionList.concat(response?.data)
+			dispatch(setQuestionList(newQuestionList))
 		}
+		
 	}
 
 export const questionSlice = createSlice({
@@ -79,14 +59,32 @@ export const questionSlice = createSlice({
 		},
 		setFilterValue(state, { payload }: PayloadAction<string>) {
 			return { ...state, filterValue: payload}
-		}
-	},
+		},
+		setQuestionMessage(state, { payload }: PayloadAction<string>) {
+			return { ...state, questionMessage: payload}
+		},
+		increasePage(state) {
+			return { ...state, pageList: state.pageList + 1}
+		},
+		setLastPage(state) {
+			return { ...state, lastPage: true}
+		},
+	}
 })
 
-export const { setPage, setHealth, setQuestionList, setFilterValue } = questionSlice.actions
+export const {
+	setPage,
+	setQuestionList,
+	setFilterValue,
+	setQuestionMessage,
+	increasePage,
+	setLastPage,
+} = questionSlice.actions
+
 export const questionList = (state: RootState) => state.question.questionList
-export const useHealth = (state: RootState) => state.question.health
 export const useFilterValue = (state: RootState) => state.question.filterValue
 export const useQuestionList = (state: RootState) => state.question.questionList
+export const useQuestionMessage = (state: RootState) => state.question.questionMessage
+export const useLastPage = (state: RootState) => state.question.lastPage
 
 export default questionSlice.reducer

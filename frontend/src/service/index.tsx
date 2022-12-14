@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { MOCK_API_URL, PAGE_SIZE } from '../utils/constants'
+import { MOCK_LOCAL_API_URL, PAGE_SIZE } from '../utils/constants'
 
 export const getHealthStatus = async () => {
 	try {
-		const response = await axios.get(`${MOCK_API_URL}/health`)
+		const response = await axios.get(`${MOCK_LOCAL_API_URL}/health`)
 		return response		
 	} catch (error) {
 		console.log('getHealthStatus-error', error)
@@ -18,7 +18,7 @@ export type getListAllQuestionsRequest = {
 
 export const getListAllQuestions = async ({ offset, filter }: getListAllQuestionsRequest) => {
 	try {
-		const response = await axios.get(`${MOCK_API_URL}/questions?limit=${PAGE_SIZE}&offset=${offset}&filter=${filter}`)
+		const response = await axios.get(`${MOCK_LOCAL_API_URL}/questions?limit=${PAGE_SIZE}&offset=${offset}&filter=${filter}`)
 		return response
 	} catch (error) {
 		console.log('getListAllQuestions-error', error)
@@ -33,7 +33,7 @@ export type shareURLType = {
 
 export const shareURL = async ({url, email}: shareURLType) => {
 	try {
-		const response = await axios.post(`${MOCK_API_URL}/share`, {
+		const response = await axios.post(`${MOCK_LOCAL_API_URL}/share`, {
 			destination_email: email,
 			content_url: url
 		})

@@ -1,9 +1,14 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import questionReducer from '../redux/question/questionSlice'
+
+import questionReducer from './question/questionSlice'
+import healthReducer from './health/healthSlice'
+import screenShareReducer from './shareScreen/shareScreenSlice'
 
 export const store = configureStore({
 	reducer: {
-		question: questionReducer
+		question: questionReducer,
+    health: healthReducer,
+    screenShare: screenShareReducer
 	},
 })
 

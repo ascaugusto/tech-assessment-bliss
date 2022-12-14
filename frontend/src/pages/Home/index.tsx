@@ -5,15 +5,30 @@ import Modal from 'react-modal'
 import debounce from 'lodash/debounce'
 
 //Reducer
-import { useAppDispatch } from '../../redux/hooks'
+import { useAppDispatch } from '../../reducers/hooks'
+
+
 import {
 	fetchHealth,
+	useHealth
+} from '../../reducers/health/healthSlice'
+
+
+import {
 	fetchQuestionList,
-	useHealth,
 	useQuestionList,
 	setFilterValue,
-	submitShareUrl
-} from '../../redux/question/questionSlice' 
+	useQuestionMessage,
+	increasePage,
+	useLastPage,
+} from '../../reducers/question/questionSlice' 
+
+import { 
+	submitShareUrl,
+	useLoadingShare,
+	setScreenShared,
+	useScreenShared
+} from '../../reducers/shareScreen/shareScreenSlice'
 
 //Components
 import { HomeContainer, QuestionItemsContainer, SearchAndButtonWrapper } from './elements'
@@ -31,9 +46,19 @@ function Home() {
 	const [email, setEmail] = useState('')
 	const [invalidEmailMessage, setInvalidEmailMessage] = useState('')
 
+	//Reducer states
 	const dispatch = useAppDispatch()
+	//Health
 	const serviceHealth = useSelector(useHealth)
+	//Questions
 	const questionList = useSelector(useQuestionList)
+	const questionMessage = useSelector(useQuestionMessage)
+	const lastPage = useSelector(useLastPage)
+	//ShareScreen
+	const screenShared = useSelector(useScreenShared)
+	const loadingShare = useSelector(useLoadingShare)
+
+	//Input refs
 	const inputRef = useRef<HTMLInputElement>(null)
 	const inputRefModal = useRef<HTMLInputElement>(null)
 
@@ -41,7 +66,7 @@ function Home() {
 	useEffect(() => {
 		dispatch(fetchHealth())
 		inputRef.current?.focus()
-	})
+	}, [])
 	
 	//When the health is ok!
 	useEffect(() => {
@@ -52,6 +77,15 @@ function Home() {
 		}
 		setTimeout(() => setIsLoading(false), 510) 
 	}, [serviceHealth])
+
+	useEffect(() => {
+		if (screenShared) {
+			console.log('entrou no if do useEffect do screenShared')
+			setOpenShareScreenModal(false)
+			_handleClearEmail()
+			dispatch(setScreenShared(false))
+		}
+	}, [screenShared])
 
 	//The retry action will reload the page!
 	const _handleRetryAction = () => {
@@ -91,6 +125,7 @@ function Home() {
 	}, 300)
 
 	const _handleOpenShareScreen = () => {
+		inputRefModal.current?.focus()
 		setOpenShareScreenModal(true)
 	}
 
@@ -126,7 +161,13 @@ function Home() {
 	}
 
 	const _submitShare = () => {
+		dispatch(setScreenShared(false))
 		dispatch(submitShareUrl(email))
+	}
+
+	const _handleLoadMore = () => {
+		dispatch(increasePage())
+		dispatch(fetchQuestionList())
 	}
 
 	return (
@@ -157,19 +198,41 @@ function Home() {
 										Share Screen
 									</Button>
 								</SearchAndButtonWrapper>
-								<QuestionItemsContainer>
-									{questionList?.map((item, index) => (
-										<Question 
-											key={index}
-											id={item.id}
-											question={item.question} 
-											image_url={item.image_url}
-											thumb_url={item.thumb_url}
-											published_at={item.published_at}
-											choices={item.choices}											
-										/>
-									))}
-								</QuestionItemsContainer>
+								{questionList.length > 0 ? (
+									<Container
+										column
+										align='center'
+										paddingBottom='30px'
+										
+									>
+										<QuestionItemsContainer>
+											{questionList?.map((item, index) => (
+												<Question 
+													key={index}
+													id={item.id}
+													question={item.question} 
+													image_url={item.image_url}
+													thumb_url={item.thumb_url}
+													published_at={item.published_at}
+													choices={item.choices}											
+												/>
+											))}
+										</QuestionItemsContainer>
+									{!lastPage && (
+										<Text
+											bold 
+											size='18px' 
+											clicker
+											onClick={_handleLoadMore}>
+											Load more...
+										</Text>
+									)}
+									</Container>
+								) : (
+									<Container width='100%' justify='center' paddingTop='60px'>
+										<Text bold>{questionMessage}</Text>
+									</Container>
+								)}
 							</Container>
 						) :
 							(
@@ -186,6 +249,7 @@ function Home() {
 				onRequestClose={_handleCloseShareScreen}
 				style={customStyles}
 				contentLabel="Share Screen Modal"
+				ariaHideApp={false}
 			>
 				<Container column height='100%' justify='space-between'>
 					<Container column paddingTop='12px'>
@@ -210,9 +274,9 @@ function Home() {
 						</Text>
 						<Button
 							onClick={_submitShare}
-							disabled={invalidEmailMessage !== '' || email === ''}
+							disabled={invalidEmailMessage !== '' || email === '' || loadingShare}
 						>
-							Send
+							{loadingShare ? 'Loading...' : 'Share'}
 						</Button>
 					</Container>
 				</Container>

@@ -26,6 +26,7 @@ export const SearchAndButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-width: 600px;
 
   @media (max-width: 700px) {
     flex-direction: column;

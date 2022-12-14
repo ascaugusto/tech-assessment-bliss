@@ -1,6 +1,6 @@
-export const MOCK_API_URL = 'https://private-bbbe9-blissrecruitmentapi.apiary-mock.com'
+export const MOCK_LOCAL_API_URL = 'http://localhost:3333'
 
-export const PAGE_SIZE = 10
+export const PAGE_SIZE = 5
 
 export const COLORS = {
 	earieBlack: '#1F1F1F',

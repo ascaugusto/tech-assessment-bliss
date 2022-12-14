@@ -1,7 +1,7 @@
 import React from 'react'
 
 //models
-import { questionType } from '../../redux/question/questionModels'
+import { questionType } from '../../reducers/question/questionModels'
 
 //Components
 import { QuestionContainer, QuestionTitleWrapper, ImgWrapper, QuestionChoiceWrapper } from './elements'
