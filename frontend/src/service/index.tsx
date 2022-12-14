@@ -12,13 +12,14 @@ export const getHealthStatus = async () => {
 }
 
 export type getListAllQuestionsRequest = {
+	limit: number
 	offset: number,
 	filter: string
 }
 
-export const getListAllQuestions = async ({ offset, filter }: getListAllQuestionsRequest) => {
+export const getListAllQuestions = async ({ limit, offset, filter }: getListAllQuestionsRequest) => {
 	try {
-		const response = await axios.get(`${MOCK_LOCAL_API_URL}/questions?limit=${PAGE_SIZE}&offset=${offset}&filter=${filter}`)
+		const response = await axios.get(`${MOCK_LOCAL_API_URL}/questions?limit=${limit}&offset=${offset}&filter=${filter}`)
 		return response
 	} catch (error) {
 		console.log('getListAllQuestions-error', error)

@@ -20,7 +20,10 @@ import {
 	useLastPage,
 	useFilterValue,
 	usePageList,
-	decreasePage
+	decreasePage,
+	setPage,
+	setPageLimit,
+	usePageLimit
 } from '../../reducers/question/questionSlice' 
 
 import { 
@@ -42,6 +45,8 @@ import Pagination from '../../components/pagination'
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [filter, setFilter] = useState(searchParams.get('filter') || '')
+	const [offset] = useState(searchParams.get('offset') || '')
+	const [limit] = useState(searchParams.get('limit') || '')
 	const [isLoading, setIsLoading] = useState(true)
 
 	//share
@@ -62,6 +67,7 @@ function Home() {
 	const lastPage = useSelector(useLastPage)
 	const filterValue = useSelector(useFilterValue)
 	const pageList = useSelector(usePageList)
+	const pageLimit = useSelector(usePageLimit)
 
 	//ShareScreen
 	const screenShared = useSelector(useScreenShared)
@@ -77,6 +83,21 @@ function Home() {
 		inputRef.current?.focus()
 	}, [])
 	
+	//Set offset by queryParams
+	useEffect(() => {
+		if (offset.length > 0) {
+			dispatch(setPage(Number(offset)))
+		}
+	}, [offset])
+
+	//Set limit by queryParams
+	useEffect(() => {
+		console.log('=====================>  ~ limit', limit)
+		if (limit.length > 0) {
+			dispatch(setPageLimit(Number(limit)))
+		}
+	}, [limit])
+
 	//When the health is ok!
 	useEffect(() => {
 		if (serviceHealth) {
@@ -124,6 +145,8 @@ function Home() {
 		setFilter(value)
 		setSearchParams({
 			filter: value,
+			offset: pageList.toString(),
+			limit: pageLimit.toString(),
 		})
 		dispatch(setFilterValue(value))
 	}
@@ -140,6 +163,8 @@ function Home() {
 		setFilter('')
 		setSearchParams({
 			filter: '',
+			offset: pageList.toString(),
+			limit: pageLimit.toString(),
 		})
 		if (inputRef.current) {
 			inputRef.current.value = ''
@@ -187,11 +212,21 @@ function Home() {
 	}
 
 	const _handleLoadNextPage = () => {
+		setSearchParams({
+			offset: (pageList + 1).toString(),
+			limit: pageLimit.toString(),
+			filter: filterValue
+		})
 		dispatch(increasePage())
 		dispatch(fetchQuestionList())
 	}
 
 	const _handleLoadPreviousPage = () => {
+		setSearchParams({
+			offset: (pageList - 1).toString(),
+			limit: pageLimit.toString(),
+			filter: filterValue
+		})
 		dispatch(decreasePage())
 		dispatch(fetchQuestionList())
 	}

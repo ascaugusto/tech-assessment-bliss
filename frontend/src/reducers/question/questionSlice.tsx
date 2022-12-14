@@ -12,6 +12,7 @@ import {
 export interface QuestionState {
   questionList: questionType[],
   pageList: number,
+  pageLimit: number,
 	filterValue: string,
 	questionMessage: string,
 	lastPage: boolean,
@@ -20,6 +21,7 @@ export interface QuestionState {
 const initialState: QuestionState = {
 	questionList: [],
 	pageList: 1,
+	pageLimit: 5,
 	filterValue: '',
 	questionMessage: '',
 	lastPage: false
@@ -29,6 +31,7 @@ export const fetchQuestionList = (): AppThunk =>
 async (dispatch, getState) => {
 		const { question } = getState()
 		const payload: getListAllQuestionsRequest = {
+			limit: question.pageLimit,
 			offset: question.pageList,
 			filter: question.filterValue
 		}
@@ -53,6 +56,9 @@ export const questionSlice = createSlice({
 		setPage(state, { payload }: PayloadAction<number>) {
 			return { ...state, pageList: payload }
 		},
+		setPageLimit(state, { payload }: PayloadAction<number>) {
+			return { ...state, pageLimit: payload }
+		},
 		setQuestionList(state, { payload }: PayloadAction<questionType[]>) {
 			return { ...state, questionList: payload}
 		},
@@ -76,6 +82,7 @@ export const questionSlice = createSlice({
 
 export const {
 	setPage,
+	setPageLimit,
 	setQuestionList,
 	setFilterValue,
 	setQuestionMessage,
@@ -90,5 +97,6 @@ export const useQuestionList = (state: RootState) => state.question.questionList
 export const useQuestionMessage = (state: RootState) => state.question.questionMessage
 export const useLastPage = (state: RootState) => state.question.lastPage
 export const usePageList = (state: RootState) => state.question.pageList
+export const usePageLimit = (state: RootState) => state.question.pageLimit
 
 export default questionSlice.reducer
