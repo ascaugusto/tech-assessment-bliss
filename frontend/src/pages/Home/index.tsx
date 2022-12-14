@@ -18,7 +18,9 @@ import {
 	useQuestionMessage,
 	increasePage,
 	useLastPage,
-	useFilterValue
+	useFilterValue,
+	usePageList,
+	decreasePage
 } from '../../reducers/question/questionSlice' 
 
 import { 
@@ -35,6 +37,7 @@ import Container from '../../components/Container'
 import Text from '../../components/Text'
 import Question from '../../components/Question'
 import Input from '../../components/Input'
+import Pagination from '../../components/pagination'
 
 function Home() {
 	const [searchParams, setSearchParams] = useSearchParams()
@@ -49,13 +52,17 @@ function Home() {
 
 	//Reducer states
 	const dispatch = useAppDispatch()
+	
 	//Health
 	const serviceHealth = useSelector(useHealth)
+	
 	//Questions
 	const questionList = useSelector(useQuestionList)
 	const questionMessage = useSelector(useQuestionMessage)
 	const lastPage = useSelector(useLastPage)
 	const filterValue = useSelector(useFilterValue)
+	const pageList = useSelector(usePageList)
+
 	//ShareScreen
 	const screenShared = useSelector(useScreenShared)
 	const loadingShare = useSelector(useLoadingShare)
@@ -150,10 +157,6 @@ function Home() {
 		_handleClearEmail()
 	}
 
-	// const _handleOnChangeEmail = (value: string) => {
-	// 	setEmail(value)
-	// }
-
 	const isValidEmail = () => {
 		if (email === '') {
 			setInvalidEmailMessage('')
@@ -183,8 +186,13 @@ function Home() {
 		dispatch(submitShareUrl(email))
 	}
 
-	const _handleLoadMore = () => {
+	const _handleLoadNextPage = () => {
 		dispatch(increasePage())
+		dispatch(fetchQuestionList())
+	}
+
+	const _handleLoadPreviousPage = () => {
+		dispatch(decreasePage())
 		dispatch(fetchQuestionList())
 	}
 
@@ -196,7 +204,7 @@ function Home() {
 				): (
 					<>
 						{serviceHealth ? (
-							<Container column>
+							<Container column align='center'>
 								<SearchAndButtonWrapper>
 									<Container column align='flex-start'>
 										<Text>
@@ -221,7 +229,6 @@ function Home() {
 										column
 										align='center'
 										paddingBottom='30px'
-										
 									>
 										<QuestionItemsContainer>
 											{questionList?.map((item, index) => (
@@ -236,21 +243,23 @@ function Home() {
 												/>
 											))}
 										</QuestionItemsContainer>
-									{!lastPage && (
-										<Text
-											bold 
-											size='18px' 
-											clicker
-											onClick={_handleLoadMore}>
-											Load more...
-										</Text>
-									)}
 									</Container>
 								) : (
-									<Container width='100%' justify='center' paddingTop='60px'>
+									<Container
+										width='100%'
+										justify='center'
+										paddingTop='60px'
+										paddingBottom='60px'
+									>
 										<Text bold>{questionMessage}</Text>
 									</Container>
 								)}
+								<Pagination 
+									previousClick={_handleLoadPreviousPage}
+									currentPage={pageList}
+									fowardClick={_handleLoadNextPage}
+									isLastPage={lastPage}
+								/>
 							</Container>
 						) :
 							(

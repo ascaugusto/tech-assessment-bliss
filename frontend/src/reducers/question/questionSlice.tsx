@@ -33,13 +33,11 @@ async (dispatch, getState) => {
 			filter: question.filterValue
 		}
 		const response = await getListAllQuestions(payload)
-		if (question.pageList === 1 && response?.data.statusMessage) {
+		if (response?.data.statusMessage) {
 			dispatch(setQuestionMessage(response?.data.statusMessage))
 			dispatch(setQuestionList([]))
-		} else if (response?.data.statusMessage) {
-			dispatch(setLastPage())
 		} else {
-			let newQuestionList = question.questionList.concat(response?.data)
+			let newQuestionList = response?.data
 			dispatch(setQuestionList(newQuestionList))
 		}
 		
@@ -67,6 +65,9 @@ export const questionSlice = createSlice({
 		increasePage(state) {
 			return { ...state, pageList: state.pageList + 1}
 		},
+		decreasePage(state) {
+			return { ...state, pageList: state.pageList - 1}
+		},
 		setLastPage(state) {
 			return { ...state, lastPage: true}
 		},
@@ -80,6 +81,7 @@ export const {
 	setQuestionMessage,
 	increasePage,
 	setLastPage,
+	decreasePage
 } = questionSlice.actions
 
 export const questionList = (state: RootState) => state.question.questionList
@@ -87,5 +89,6 @@ export const useFilterValue = (state: RootState) => state.question.filterValue
 export const useQuestionList = (state: RootState) => state.question.questionList
 export const useQuestionMessage = (state: RootState) => state.question.questionMessage
 export const useLastPage = (state: RootState) => state.question.lastPage
+export const usePageList = (state: RootState) => state.question.pageList
 
 export default questionSlice.reducer
