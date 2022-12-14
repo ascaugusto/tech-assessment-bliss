@@ -22,7 +22,7 @@ export const submitShareUrl = (email: string): AppThunk =>
 		}
 		const response = await shareURL(payload)
 		if (response?.status === 200) {
-			alert('Page sent successfully!')
+			alert(`Page:${payload.url} sent successfully!`, )
 			dispatch(setScreenShared(true))
 			dispatch(setLoadingShare(false))
 		} else {
@@ -36,7 +36,6 @@ export const shareScreenSlice = createSlice({
 	initialState,
 	reducers: {
     setLoadingShare(state, { payload }: PayloadAction<boolean>) {
-    console.log('======setLoadingShare===============>  ~ payload', payload)
 			return { ...state, loadingShare: payload}
 		},
 		setScreenShared(state, { payload }: PayloadAction<boolean>) {
