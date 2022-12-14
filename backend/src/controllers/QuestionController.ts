@@ -37,8 +37,10 @@ export const GetQuestions = async (req: Request, res: Response) => {
             }
           }) 
         }
-        newQuetions = filteredQuestions
-      });
+        const startIndex = (Number(offset) - 1) * Number(limit)
+        const endIndex = Number(offset) * Number(limit)
+        newQuetions = filteredQuestions.slice(startIndex, endIndex)
+      })
     }
     if (newQuetions.length === 0) {
       res.status(200).send({ statusMessage: 'No questions found!' })
