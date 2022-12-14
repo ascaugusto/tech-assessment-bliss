@@ -26,7 +26,7 @@ const initialState: QuestionState = {
 }
 
 export const fetchQuestionList = (): AppThunk =>
-	async (dispatch, getState) => {
+async (dispatch, getState) => {
 		const { question } = getState()
 		const payload: getListAllQuestionsRequest = {
 			offset: question.pageList,
@@ -35,6 +35,7 @@ export const fetchQuestionList = (): AppThunk =>
 		const response = await getListAllQuestions(payload)
 		if (question.pageList === 1 && response?.data.statusMessage) {
 			dispatch(setQuestionMessage(response?.data.statusMessage))
+			dispatch(setQuestionList([]))
 		} else if (response?.data.statusMessage) {
 			dispatch(setLastPage())
 		} else {

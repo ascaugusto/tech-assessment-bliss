@@ -2,17 +2,14 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import Modal from 'react-modal'
-import debounce from 'lodash/debounce'
 
 //Reducer
 import { useAppDispatch } from '../../reducers/hooks'
-
 
 import {
 	fetchHealth,
 	useHealth
 } from '../../reducers/health/healthSlice'
-
 
 import {
 	fetchQuestionList,
@@ -21,6 +18,7 @@ import {
 	useQuestionMessage,
 	increasePage,
 	useLastPage,
+	useFilterValue
 } from '../../reducers/question/questionSlice' 
 
 import { 
@@ -42,9 +40,12 @@ function Home() {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [filter, setFilter] = useState(searchParams.get('filter') || '')
 	const [isLoading, setIsLoading] = useState(true)
+
+	//share
 	const [openShareScreenModal, setOpenShareScreenModal] = useState(false)
 	const [email, setEmail] = useState('')
 	const [invalidEmailMessage, setInvalidEmailMessage] = useState('')
+	const [disabledShareButton, setDisabledShareButton] = useState(true)
 
 	//Reducer states
 	const dispatch = useAppDispatch()
@@ -54,6 +55,7 @@ function Home() {
 	const questionList = useSelector(useQuestionList)
 	const questionMessage = useSelector(useQuestionMessage)
 	const lastPage = useSelector(useLastPage)
+	const filterValue = useSelector(useFilterValue)
 	//ShareScreen
 	const screenShared = useSelector(useScreenShared)
 	const loadingShare = useSelector(useLoadingShare)
@@ -87,6 +89,25 @@ function Home() {
 		}
 	}, [screenShared])
 
+	//Fetch question when search filter change
+	useEffect(() => {
+		const timer = setTimeout(() => dispatch(fetchQuestionList()), 300)
+		return () => {
+			clearTimeout(timer)
+		}
+	}, [filterValue])
+
+	//Debounce for valid email
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			isValidEmail()
+		}, 300)
+
+		return () => {
+			clearTimeout(timer)
+		}
+	}, [email])
+
 	//The retry action will reload the page!
 	const _handleRetryAction = () => {
 		window.location.reload()
@@ -98,7 +119,6 @@ function Home() {
 			filter: value,
 		})
 		dispatch(setFilterValue(value))
-		_debounceFetchQuestionList()
 	}
 
 	const _handleInputFocus = () => {
@@ -113,16 +133,12 @@ function Home() {
 		setFilter('')
 		setSearchParams({
 			filter: '',
-			// offset: 0
 		})
 		if (inputRef.current) {
 			inputRef.current.value = ''
 		}
+		dispatch(setFilterValue(''))
 	}
-
-	const _debounceFetchQuestionList = debounce(() => {
-		dispatch(fetchQuestionList())
-	}, 300)
 
 	const _handleOpenShareScreen = () => {
 		inputRefModal.current?.focus()
@@ -134,23 +150,25 @@ function Home() {
 		_handleClearEmail()
 	}
 
-	const _handleOnChangeEmail = (value: string) => {
-		isValidEmail(value)
-		setEmail(value)
-	}
+	// const _handleOnChangeEmail = (value: string) => {
+	// 	setEmail(value)
+	// }
 
-	const isValidEmail = debounce((email: string) => {
+	const isValidEmail = () => {
 		if (email === '') {
 			setInvalidEmailMessage('')
+			setDisabledShareButton(true)
 			return false
 		} else if (!/\S+@\S+\.\S+/.test(email)) {
 			setInvalidEmailMessage('Email is invalid!')
+			setDisabledShareButton(true)
 			return false
 		} else {
 			setInvalidEmailMessage('')
+			setDisabledShareButton(false)
 			return true
 		}
-	}, 300)
+	}
 
 	const _handleClearEmail = () => {
 		if (inputRefModal.current) {
@@ -263,7 +281,7 @@ function Home() {
 						</Text>
 						<Input
 							value={email || undefined}
-							onChange={e => _handleOnChangeEmail(e.target.value)}
+							onChange={e => setEmail(e.target.value)}
 							onClearSearch={_handleClearEmail}
 							ref={inputRefModal}
 						/>
@@ -274,7 +292,7 @@ function Home() {
 						</Text>
 						<Button
 							onClick={_submitShare}
-							disabled={invalidEmailMessage !== '' || email === '' || loadingShare}
+							disabled={disabledShareButton || invalidEmailMessage !== '' || email === '' || loadingShare}
 						>
 							{loadingShare ? 'Loading...' : 'Share'}
 						</Button>
