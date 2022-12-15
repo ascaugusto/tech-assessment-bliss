@@ -9,9 +9,9 @@ import Text from '../Text'
 // import Container from '../Container'
 
 
-const Question = ({id, question, thumb_url, choices}: questionType) => {
+const Question = ({id, question, thumb_url, choices, onClick }: questionType) => {
 	return (
-		<QuestionContainer>
+		<QuestionContainer onClick={onClick}>
 			<ImgWrapper>
 				<img src={thumb_url} />
 			</ImgWrapper>

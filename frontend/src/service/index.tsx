@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MOCK_LOCAL_API_URL, PAGE_SIZE } from '../utils/constants'
+import { MOCK_LOCAL_API_URL } from '../utils/constants'
 
 export const getHealthStatus = async () => {
 	try {
@@ -26,6 +26,17 @@ export const getListAllQuestions = async ({ limit, offset, filter }: getListAllQ
 		return { data: [] }
 	}
 }
+
+export const getQuestionById = async ( id: string ) => {
+	try {
+		const response = await axios.get(`${MOCK_LOCAL_API_URL}/question?id=${id}`)
+		return response
+	} catch (error) {
+		console.log('getQuestionById-error', error)
+		return { data: [] }
+	}
+}
+
 
 export type shareURLType = {
 	url: string,

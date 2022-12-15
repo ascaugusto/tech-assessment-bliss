@@ -9,5 +9,6 @@ export interface questionType {
   image_url: string,
   thumb_url: string,
   published_at: string,
-  choices: choiceType[]
+  choices: choiceType[],
+  onClick?: () => void,
 }

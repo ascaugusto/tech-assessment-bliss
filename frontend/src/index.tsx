@@ -3,9 +3,12 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
+import './index.css'
+
 import { store } from './reducers/store'
 import reportWebVitals from './reportWebVitals'
-import './index.css'
+import Questions from './pages/Questions'
+import Detail from './pages/Detail'
 import Home from './pages/Home'
 
 const container = document.getElementById('root')!
@@ -17,6 +20,8 @@ root.render(
 			<BrowserRouter>
 				<Routes>
 					<Route path='/' element={<Home />} />
+					<Route path='/questions' element={<Questions />} />
+					<Route path='/questions/:id' element={<Detail />} />
 				</Routes>
 			</BrowserRouter>
 		</Provider>

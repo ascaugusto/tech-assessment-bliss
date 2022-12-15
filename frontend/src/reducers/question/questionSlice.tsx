@@ -15,16 +15,14 @@ export interface QuestionState {
   pageLimit: number,
 	filterValue: string,
 	questionMessage: string,
-	lastPage: boolean,
 }
 
 const initialState: QuestionState = {
 	questionList: [],
 	pageList: 1,
-	pageLimit: 5,
+	pageLimit: 10,
 	filterValue: '',
-	questionMessage: '',
-	lastPage: false
+	questionMessage: ''
 }
 
 export const fetchQuestionList = (): AppThunk =>
@@ -43,16 +41,12 @@ async (dispatch, getState) => {
 			let newQuestionList = response?.data
 			dispatch(setQuestionList(newQuestionList))
 		}
-		
 	}
 
 export const questionSlice = createSlice({
 	name: 'question',
 	initialState,
 	reducers: {
-		setHealth(state, { payload }: PayloadAction<boolean>) {
-			return { ...state, health: payload }
-		},
 		setPage(state, { payload }: PayloadAction<number>) {
 			return { ...state, pageList: payload }
 		},
@@ -95,7 +89,6 @@ export const questionList = (state: RootState) => state.question.questionList
 export const useFilterValue = (state: RootState) => state.question.filterValue
 export const useQuestionList = (state: RootState) => state.question.questionList
 export const useQuestionMessage = (state: RootState) => state.question.questionMessage
-export const useLastPage = (state: RootState) => state.question.lastPage
 export const usePageList = (state: RootState) => state.question.pageList
 export const usePageLimit = (state: RootState) => state.question.pageLimit
 

@@ -12,7 +12,6 @@ const initialState: HealthState = {
 	health: false
 }
 
-
 export const fetchHealth = (): AppThunk =>
 async (dispatch) => {
   try {

@@ -32,7 +32,7 @@ export const submitShareUrl = (email: string): AppThunk =>
 	}
 
 export const shareScreenSlice = createSlice({
-	name: 'health',
+	name: 'share',
 	initialState,
 	reducers: {
     setLoadingShare(state, { payload }: PayloadAction<boolean>) {
