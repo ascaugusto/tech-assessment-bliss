@@ -50,6 +50,13 @@ export const GetQuestions = async (req: Request, res: Response) => {
   }
 }
 
+export const GetQuestionById = async (req: Request, res: Response) => {
+  const id = req.query.id
+  const questions: questionType[] = await getAllQuestions()
+  const question = questions.filter(question => question.id.toString() === id)
+  return res.json(question)
+}
+
 export const ShareUrl = async (req: Request, res: Response) => {
   const body = req.body
   if (!body) return res.status(400).end('The params is empty!')

@@ -35,7 +35,9 @@ describe('Fetch questions', () => {
   it('Should return only the filtered questions', async () => {
     const requestFilter = 'Ruby'
     const res = await request(app).get('/questions').query({
-      filter: requestFilter
+      filter: requestFilter,
+      offset: 1,
+      limit: 10
     })
     expect(res.statusCode).toBe(200);
     const filtedQuestion: questionType[] = []
@@ -60,6 +62,15 @@ describe('Fetch questions', () => {
     })
     expect(res.statusCode).toBe(200);
     expect(res.body).toStrictEqual({ statusMessage: 'No questions found!' })
+  })
+})
+
+describe('Fetch question by id', () => {
+  it('Shoul return a question', async () => {
+    const res = await request(app).get('/question').query({
+      id: 1
+    })
+    expect(res.body.length).toBe(1)
   })
 })
 
